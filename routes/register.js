@@ -7,6 +7,9 @@ const path= require('path');
 const bodyParser= require('body-parser')
 const {pool}= require('../dbConfig');
 
+const createUser= require('./functions/createUser');
+const { username } = require('./functions/createUser');
+
 mongoose.connect('mongodb://localhost:27017/login-db_jwt', {
     useNewurlParser: true,
     useUnifiedTopology: true,
@@ -14,11 +17,11 @@ mongoose.connect('mongodb://localhost:27017/login-db_jwt', {
 
 })
 
-router.post('/api/register', async (req, res) => {
+router.post('/api/register', async(req, res) => {
     
     try{
         
-    const { username, password: plainText } = req.body;
+     const { username, password: plainText } = req.body;
     
     if (!username || typeof username !== 'string') {
         return res.json({ status: 'error', error: 'Invalid username' })
@@ -31,8 +34,9 @@ router.post('/api/register', async (req, res) => {
     }
     
     const password = await bcrypt.hash(plainText, 10)
+    
    
-
+    
     try{
         const response =  pool.query(
             `SELECT * FROM users
